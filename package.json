@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/kc1116/badgeforce-issuing-engine/issues"
   },
-  "homepage": "https://github.com/kc1116/badgeforce-issuing-engine#readme"
+  "homepage": "https://github.com/kc1116/badgeforce-issuing-engine#readme",
+  "dependencies": {
+    "async": "^2.1.4"
+  }
 }
