@@ -8,3 +8,11 @@ class Identity {
     if (hashed) { this.hashed = hashed }
   }
 }
+
+let create = (data) => {
+  return new Identity(data.identity, data.type)
+}
+
+module.exports = {
+  create: create
+}

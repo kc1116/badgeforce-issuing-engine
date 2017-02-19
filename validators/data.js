@@ -4,8 +4,9 @@ const _ = require('lodash')
 let validateAssertionData = (data) => {
   var err = {}
 
-  if (!data.uid || !validator.isUUID(data.uid)) {
-    err['uid'] = 'uid property is invalid or missing: ' + data.uid
+  if (!data) {
+    err['missing'] = 'assertion data missing'
+    return err
   }
 
   let recipientErr = validateIdentity(data.recipient)
@@ -14,7 +15,7 @@ let validateAssertionData = (data) => {
   }
 
   if (!data.badge || !validator.isURL(data.badge)) {
-    err['badge'] = 'badge property is invalid or missing: ' + data.recipient
+    err['badge'] = 'badge property is invalid or missing: ' + data.badge
   }
 
   let verifyErr = validateVerify(data.verify)
@@ -34,12 +35,15 @@ let validateAssertionData = (data) => {
       err['expires'] = 'optional expires date is invalid: ' + options.expires
     }
   }
+
+  return err
 }
 
 let validateIdentity = (identity) => {
   var err = {}
   if (!identity) {
-    err['missing'] = 'identity object missing: ' + identity
+    err['missing'] = 'identity object missing'
+    return err
   }
 
   if (!identity.identity || !validator.isEmail(identity.identity)) {
@@ -56,10 +60,11 @@ let validateIdentity = (identity) => {
 let validateVerify = (verify) => {
   var err = {}
   if (!verify) {
-    err['missing'] = 'verify object missing: ' + verify
+    err['missing'] = 'verify object missing'
+    return err
   }
 
-  if (!verify.type || verify.type !== 'hosted' || verify.type !== 'signed') {
+  if (!verify.type || verify.type !== 'hosted' && verify.type !== 'signed') {
     err['type'] = 'verify type is missing or invalid, hosted or signed is supported: ' + verify.type
   }
 
