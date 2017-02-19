@@ -1,6 +1,5 @@
 const assert = require('assert')
 const dataValidator = require('../validators/data')
-const assertion = require('../badge/assertion')
 const identity = require('../badge/identity')
 const verify = require('../badge/verify')
 const _ = require('lodash')
