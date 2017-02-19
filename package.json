@@ -18,6 +18,7 @@
   "homepage": "https://github.com/kc1116/badgeforce-issuing-engine#readme",
   "dependencies": {
     "async": "^2.1.4",
+    "lodash": "^4.17.4",
     "validator": "^6.2.1"
   },
   "devDependencies": {
