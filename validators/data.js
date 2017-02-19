@@ -36,6 +36,10 @@ let validateAssertionData = (data) => {
     }
   }
 
+  if (_.isEmpty(err)) {
+    return null
+  }
+
   return err
 }
 

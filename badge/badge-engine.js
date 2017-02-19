@@ -1,5 +1,6 @@
 const assertion = require('./assertion')
 const async = require('async')
+const dataValidator = require('../validators/data')
 
 /*
     validate data
@@ -8,16 +9,18 @@ const async = require('async')
     send image to s3 if present
     save to database
 */
-const issueNewBadge = (data) => {
+let issueNewBadge = (data) => {
   async.auto({
     // this function will just be passed a callback
-    validateData: TODO,
+    validateData: (callback) => {
+      callback(dataValidator.validateAssertionData(data))
+    },
     getNewAssertion: [ 'validateData', (results, callback) => {
-
+      callback(null, assertion.create(data))
     } ],
     validateAssertion: [ 'getNewAssertion', (results, callback) => {
 
-    } ],
+    }],
     s3: [ 'validateAssertion', (results, callback) => {
 
     } ],
