@@ -8,3 +8,11 @@ class Issuer {
     if (options.email) { this.email = options.email }
   }
 }
+
+let create = (data) => {
+  return new Issuer(data.name, data.url, data.options)
+}
+
+module.exports = {
+  create: create
+}

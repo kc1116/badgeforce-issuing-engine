@@ -8,7 +8,15 @@ class BadgeClass {
     this.issuer = issuer || null
 
     // optional BadgeClass data
-    if (options.alignment) { this.alignment = alignment }
-    if (options.tags) { this.tags = tags }
+    if (options.alignment) { this.alignment = options.alignment }
+    if (options.tags) { this.tags = options.tags }
   }
+}
+
+let create = (data) => {
+  return new BadgeClass(data.name, data.description, data.image, data.criteria, data.issuer, data.options)
+}
+
+module.exports = {
+  create: create
 }

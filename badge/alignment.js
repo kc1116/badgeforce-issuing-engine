@@ -6,3 +6,11 @@ class Alignment {
     if (description) { this.description = description }
   }
 }
+
+let create = (data) => {
+  return new Alignment(data.name, data.url, data.description)
+}
+
+module.exports = {
+  create: create
+}

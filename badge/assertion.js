@@ -11,7 +11,7 @@ class Assertion {
 
     // optional assertion data
     if (options) {
-      if (options.image) { this.image = options.image };
+      if (options.image) { this.image = options.image.image };
       if (options.evidence) { this.evidence = options.evidence };
       if (options.expires) { this.expires = options.expires };
     }
@@ -22,7 +22,7 @@ let create = (data) => {
   let uid = uuidV4()
 
   // TODO construct proper badge identity object pass it to contructor as recipient
-  return new Assertion(uid, data.recipient, data.badge, data.options)
+  return new Assertion(uid, data.recipient, data.badge, data.verify, data.options)
 }
 module.exports = {
   create: create

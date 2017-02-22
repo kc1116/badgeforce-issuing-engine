@@ -3,6 +3,7 @@ const dataValidator = require('../validators/data')
 const identity = require('../badge/identity')
 const verify = require('../badge/verify')
 const _ = require('lodash')
+const path = require('path')
 
 // Test suite for verify object validation
 describe('Data validator for verify object test suite', function () {
@@ -86,11 +87,47 @@ describe('Data validator for assertion object test suite', function () {
     let err = dataValidator.validateAssertionData(data)
     assert.equal('assertion data missing', err.missing)
   })
-  it('Validate identity object with missing badge', function () {
+  it('Validate assertion object with missing badge', function () {
     let recipient = identity.create({identity: 'khalil@gmail.com', type: 'email'})
     let data = {recipient: recipient}
     let err = dataValidator.validateAssertionData(data)
     assert.equal('badge property is invalid or missing: ' + data.badge, err.badge)
+  })
+  it('Validate assertion object with unaccepted optional image file type', function () {
+    let recipient = identity.create({identity: 'khalil@gmail.com', type: 'email'})
+    let verifyObj = verify.create({type: 'hosted', url: 'https://khalil.com'})
+    let fullpath = path.join(__dirname, '/me.jpg')
+    var data = {
+      recipient: recipient,
+      verify: verifyObj,
+      badge: 'https://badge.com',
+      options: {
+        image: {
+          type: 'file',
+          image: fullpath
+        }
+      }
+    }
+    let err = dataValidator.validateAssertionData(data)
+    assert.equal('image type is not accepted: image/jpeg', err.image.invalid)
+  })
+  it('Validate assertion object with accepted optional image file type', function () {
+    let recipient = identity.create({identity: 'khalil@gmail.com', type: 'email'})
+    let verifyObj = verify.create({type: 'hosted', url: 'https://khalil.com'})
+    let fullpath = path.join(__dirname, '/gopher.png')
+    var data = {
+      recipient: recipient,
+      verify: verifyObj,
+      badge: 'https://badge.com',
+      options: {
+        image: {
+          type: 'file',
+          image: fullpath
+        }
+      }
+    }
+    let err = dataValidator.validateAssertionData(data)
+    assert.equal(null, err)
   })
 })
 

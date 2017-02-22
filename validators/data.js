@@ -1,6 +1,11 @@
 const validator = require('validator')
 const _ = require('lodash')
 
+const readChunk = require('read-chunk')
+const imageType = require('image-type')
+const ACCEPTED_IMAGE_TYPES = ['image/png']
+// const http = require('http')
+
 let validateAssertionData = (data) => {
   var err = {}
 
@@ -25,8 +30,17 @@ let validateAssertionData = (data) => {
 
   if (data.options) {
     let options = data.options
-    if (options.image && !validator.isURL(options.image)) {
-      err['image'] = 'optional image url is invalid: ' + options.image
+    if (options.image) {
+      if (options.image.type === 'url' && !validator.isURL(options.image)) {
+        err['image'] = 'optional image url is invalid: ' + options.image.image
+      } else if (options.image.type === 'file') {
+        let imageErr = validateImage(options.image)
+        if (!_.isEmpty(imageErr)) {
+          err['image'] = imageErr
+        }
+      } else {
+        err['image'] = 'optional image is invalid: ' + options.image.image
+      }
     }
     if (options.evidence && !validator.isURL(options.evidence)) {
       err['evidence'] = 'optional evidence url is invalid: ' + options.evidence
@@ -58,6 +72,9 @@ let validateIdentity = (identity) => {
     err['type'] = 'identity type missing or invalid, email is only supported type: ' + identity.type
   }
 
+  if (_.isEmpty(err)) {
+    return null
+  }
   return err
 }
 
@@ -76,11 +93,44 @@ let validateVerify = (verify) => {
     err['url'] = 'verify url is missing or invalid: ' + verify.url
   }
 
+  if (_.isEmpty(err)) {
+    return null
+  }
   return err
 }
 
+let validateImage = (image) => {
+  let err = {}
+
+  if (image.type === 'file') {
+    let buffer = readChunk.sync(image.image, 0, 12)
+    let type = imageType(buffer)
+    if (_.indexOf(ACCEPTED_IMAGE_TYPES, type.mime) < 0) {
+      err['invalid'] = 'image type is not accepted: ' + type.mime
+    }
+  }
+
+  if (_.isEmpty(err)) {
+    return null
+  }
+  return err
+  /*
+  if (image.type === 'url') {
+    http.get(image.image, res => {
+      res.once('data', chunk => {
+        res.destroy()
+        let type = imageType(chunk)
+        // => {ext: 'gif', mime: 'image/gif'}
+        if (!_.indexOf(ACCEPTED_IMAGE_TYPES, type.mime) > -1) {
+          err['invalid'] = 'image type is not accepted: ' + type
+        }
+      })
+    })
+  } */
+}
 module.exports = {
   validateAssertionData: validateAssertionData,
   validateIdentity: validateIdentity,
-  validateVerify: validateVerify
+  validateVerify: validateVerify,
+  validateImage: validateImage
 }

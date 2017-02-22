@@ -1,6 +1,8 @@
 const assertion = require('./assertion')
 const async = require('async')
 const dataValidator = require('../validators/data')
+const obvalidator = require('../validators/schema')
+const s3Utils = require('../s3/s3-utils')
 
 /*
     validate data
@@ -11,24 +13,30 @@ const dataValidator = require('../validators/data')
 */
 let issueNewBadge = (data) => {
   async.auto({
-    // this function will just be passed a callback
     validateData: (callback) => {
       callback(dataValidator.validateAssertionData(data))
     },
-    getNewAssertion: [ 'validateData', (results, callback) => {
+    s3UploadImage: [ 'validateData', (results, callback) => {
+      (data.options.image) ? s3Utils.uploadAssertionImage(data.options.image.image, callback) : callback()
+    }],
+    getNewAssertion: [ 's3UploadImage', (results, callback) => {
+      if (results.s3UploadImage) {
+        data.options.image.image = results.s3UploadImage.Location
+      }
       callback(null, assertion.create(data))
     } ],
     validateAssertion: [ 'getNewAssertion', (results, callback) => {
+      obvalidator.validateBadgeAssertion(results.getNewAssertion, callback)
+    }]
+    /* save: [ 's3UploadImage', (results, callback) => {
 
-    }],
-    s3: [ 'validateAssertion', (results, callback) => {
-
-    } ],
-    save: [ 's3', (results, callback) => {
-
-    } ]
+    }] */
   }, (err, results) => {
     console.log(err)
-    console.log(results)
+    console.log('Results: \n ', results.getNewAssertion)
   })
+}
+
+module.exports = {
+  issueNewBadge: issueNewBadge
 }
