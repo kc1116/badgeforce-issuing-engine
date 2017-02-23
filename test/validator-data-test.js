@@ -1,7 +1,7 @@
 const assert = require('assert')
 const dataValidator = require('../validators/data')
-const identity = require('../badge/identity')
-const verify = require('../badge/verify')
+const identity = require('../open-badge/badge/identity')
+const verify = require('../open-badge/badge/verify')
 const _ = require('lodash')
 const path = require('path')
 

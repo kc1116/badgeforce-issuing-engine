@@ -1,4 +1,4 @@
-const assertion = require('./assertion')
+const assertion = require('../open-badge/assertion')
 const async = require('async')
 const dataValidator = require('../validators/data')
 const obvalidator = require('../validators/schema')
