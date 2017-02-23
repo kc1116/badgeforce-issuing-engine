@@ -16,6 +16,10 @@ class Assertion {
       if (options.expires) { this.expires = options.expires };
     }
   }
+
+  toObject () {
+    return this
+  }
 }
 
 let create = (data) => {

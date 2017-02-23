@@ -10,5 +10,6 @@ let create = (data) => {
 }
 
 module.exports = {
-  create: create
+  create: create,
+  class: Verify
 }

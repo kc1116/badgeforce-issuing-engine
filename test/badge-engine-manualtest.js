@@ -1,6 +1,6 @@
-/* const badgeEngine = require('../badge/badge-engine')
-const identity = require('../open-badge/badge/identity')
-const verify = require('../open-badge/badge/verify')
+const badgeEngine = require('../badge/badge-engine')
+const identity = require('../badge/open-badge/identity')
+const verify = require('../badge/open-badge/verify')
 const path = require('path')
 
 let recipient = identity.create({identity: 'khalil@gmail.com', type: 'email'})

@@ -1,9 +1,9 @@
-const assertion = require('../open-badge/assertion')
 const async = require('async')
 const dataValidator = require('../validators/data')
 const obvalidator = require('../validators/schema')
 const s3Utils = require('../s3/s3-utils')
-
+const models = require('../database/db').models
+const assertion = require('./open-badge/assertion')
 /*
     validate data
     get new assertion object
@@ -27,13 +27,13 @@ let issueNewBadge = (data) => {
     } ],
     validateAssertion: [ 'getNewAssertion', (results, callback) => {
       obvalidator.validateBadgeAssertion(results.getNewAssertion, callback)
+    }],
+    save: [ 's3UploadImage', (results, callback) => {
+      callback(null, models.getNewAssertion(results.getNewAssertion.toObject()))
     }]
-    /* save: [ 's3UploadImage', (results, callback) => {
-
-    }] */
   }, (err, results) => {
-    console.log(err)
-    console.log('Results: \n ', results.getNewAssertion)
+    // console.log(err)
+    console.log('Results: \n ', results.save)
   })
 }
 
