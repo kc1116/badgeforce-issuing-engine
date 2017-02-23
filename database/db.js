@@ -26,12 +26,17 @@ let badgeClassSchema = new Schema({
 let Assertion = mongoose.model('Assertion', assertionSchema)
 let BadgeClass = mongoose.model('BadgeClass', badgeClassSchema)
 
-let getNewAssertion = (assertion) => {
-  return new Assertion(assertion)
+let getNewAssertion = (assertion, callback) => {
+  Assertion.create(assertion, callback)
+}
+
+let getNewBadgeClass = (badgeClass, callback) => {
+  BadgeClass.create(badgeClass, callback)
 }
 
 module.exports = {
   models: {
-    getNewAssertion: getNewAssertion
+    getNewAssertion: getNewAssertion,
+    getNewBadgeClass: getNewBadgeClass
   }
 }
