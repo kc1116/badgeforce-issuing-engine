@@ -1,4 +1,4 @@
-/* const badgeEngine = require('../badge/badge-engine')
+const badgeEngine = require('../badge/badge-engine')
 const identity = require('../badge/open-badge/identity')
 const verify = require('../badge/open-badge/verify')
 const path = require('path')

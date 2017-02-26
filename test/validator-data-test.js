@@ -248,6 +248,28 @@ describe('Data validator for badge class object test suite', function () {
     }
     assert.equal('badge class image is missing', dataValidator.validateBadgeClassData(data).image)
   })
+  it('Validate badge class object with invalid image url', function () {
+    let data = {
+      'name': 'New Badge Class',
+      'description': 'This is a description',
+      'criteria': 'https://google.com',
+      'issuer': 'https://google.com/issuer',
+      'image': {
+        'image': 'bad',
+        'type': 'url'
+      },
+      'alignment': [
+        {
+          'name': 'New Alignment',
+          'url': 'https://newalignment.com',
+          'options': {
+            'description': 'This is a description'
+          }
+        }
+      ]
+    }
+    assert.equal('badge class image url is invalid: ' + data.image.image, dataValidator.validateBadgeClassData(data).image)
+  })
   it('Validate badge class object with missing criteria', function () {
     let data = {
       'name': 'New Badge Class',

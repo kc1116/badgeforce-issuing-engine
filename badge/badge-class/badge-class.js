@@ -11,10 +11,14 @@ class BadgeClass {
     if (options.alignment) { this.alignment = options.alignment }
     if (options.tags) { this.tags = options.tags }
   }
+
+  toObject () {
+    return this
+  }
 }
 
 let create = (data) => {
-  return new BadgeClass(data.name, data.description, data.image, data.criteria, data.issuer, data.options)
+  return new BadgeClass(data.name, data.description, data.image.image, data.criteria, data.issuer, data.options)
 }
 
 module.exports = {

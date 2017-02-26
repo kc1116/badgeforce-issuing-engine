@@ -4,6 +4,7 @@ const obvalidator = require('../validators/schema')
 const s3Utils = require('../s3/s3-utils')
 const models = require('../database/db').models
 const assertion = require('./open-badge/assertion')
+const badgeclass = require('./badge-class/badge-class')
 /*
     validate data
     get new assertion object
@@ -26,17 +27,42 @@ let issueNewBadge = (data) => {
       callback(null, assertion.create(data))
     } ],
     validateAssertion: [ 'getNewAssertion', (results, callback) => {
-      obvalidator.validateBadgeAssertion(results.getNewAssertion, callback)
+      // obvalidator.validateBadgeAssertion(results.getNewAssertion, callback)
+      callback()
     }],
-    save: [ 's3UploadImage', (results, callback) => {
-      callback(null, models.getNewAssertion(results.getNewAssertion.toObject()))
+    save: [ 'validateAssertion', (results, callback) => {
+      models.getNewAssertion(results.getNewAssertion.toObject(), callback)
     }]
   }, (err, results) => {
-    // console.log(err)
+    console.log('Error: \n', err)
+    console.log('Results: \n ', results.save)
+  })
+}
+
+let createNewBadgeClass = (data) => {
+  async.auto({
+    validateData: (callback) => {
+      callback(dataValidator.validateBadgeClassData(data))
+    },
+    s3UploadImage: [ 'validateData', (results, callback) => {
+      (data.image.type === 'file') ? s3Utils.uploadBadgeClassImage(data.image.image, callback) : callback()
+    }],
+    getNewBadgeClass: [ 's3UploadImage', (results, callback) => {
+      if (results.s3UploadImage) {
+        data.image.image = results.s3UploadImage.Location
+      }
+      callback(null, badgeclass.create(data))
+    } ],
+    save: [ 'getNewBadgeClass', (results, callback) => {
+      models.getNewBadgeClass(results.getNewBadgeClass.toObject(), callback)
+    }]
+  }, (err, results) => {
+    console.log(err)
     console.log('Results: \n ', results.save)
   })
 }
 
 module.exports = {
-  issueNewBadge: issueNewBadge
+  issueNewBadge: issueNewBadge,
+  createNewBadgeClass: createNewBadgeClass
 }
