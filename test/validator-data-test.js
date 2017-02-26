@@ -3,6 +3,7 @@ const dataValidator = require('../validators/data')
 const identity = require('../badge/open-badge/identity')
 const verify = require('../badge/open-badge/verify')
 const alignment = require('../badge/badge-class/alignment')
+const issuer = require('../badge/open-badge/issuer')
 const _ = require('lodash')
 const path = require('path')
 
@@ -303,5 +304,95 @@ describe('Data validator for badge class object test suite', function () {
       ]
     }
     assert.equal('badge class issuer is invalid or missing', dataValidator.validateBadgeClassData(data).issuer)
+  })
+})
+
+describe('Data validator for issuer object test suite', function () {
+  it('Validate issuer object with good data', function () {
+    let data = {
+      name: 'BadgeForce Issuer',
+      url: 'https://badgeforce.io',
+      options: {
+        email: 'engineering@badgeforce.io',
+        image: {
+          image: 'https://google.com/golang',
+          type: 'url'
+        }
+      }
+    }
+    let issuerObj = issuer.create(data)
+    assert.equal(true, _.isEmpty(dataValidator.validateIssuerData(issuerObj)))
+  })
+  it('Validate issuer object passing null', function () {
+    let data = null
+    assert.equal('issuer data missing', dataValidator.validateIssuerData(data).missing)
+  })
+  it('Validate issuer object with missing name', function () {
+    let data = {
+      url: 'https://badgeforce.io',
+      options: {
+        email: 'engineering@badgeforce.io',
+        image: {
+          image: 'https://google.com/golang',
+          type: 'url'
+        }
+      }
+    }
+    assert.equal('issuer name is missing', dataValidator.validateIssuerData(data).name)
+  })
+  it('Validate issuer object with missing and invalid url', function () {
+    let missingUrl = {
+      name: 'BadgeForce Issuer',
+      options: {
+        email: 'engineering@badgeforce.io',
+        image: {
+          image: 'https://google.com/golang',
+          type: 'url'
+        }
+      }
+    }
+    let issuerObj1 = issuer.create(missingUrl)
+    assert.equal('issuer url is invalid or missing', dataValidator.validateIssuerData(issuerObj1).url)
+
+    let invalidUrl = {
+      name: 'BadgeForce Issuer',
+      url: 'bad',
+      options: {
+        email: 'engineering@badgeforce.io',
+        image: {
+          image: 'https://google.com/golang',
+          type: 'url'
+        }
+      }
+    }
+    let issuerObj2 = issuer.create(invalidUrl)
+    assert.equal('issuer url is invalid or missing', dataValidator.validateIssuerData(issuerObj2).url)
+  })
+  it('Validate issuer object with invalid image url and unaccepted image type', function () {
+    let invalidUrl = {
+      name: 'BadgeForce Issuer',
+      url: 'https://issuer.com',
+      options: {
+        email: 'engineering@badgeforce.io',
+        image: {
+          image: 'bad',
+          type: 'url'
+        }
+      }
+    }
+    assert.equal('issuer image url is invalid: ' + invalidUrl.options.image.image, dataValidator.validateIssuerData(invalidUrl).image)
+
+    let invalidImage = {
+      name: 'BadgeForce Issuer',
+      url: 'https://issuer.com',
+      options: {
+        email: 'engineering@badgeforce.io',
+        image: {
+          image: path.join(__dirname, '/me.jpg'),
+          type: 'file'
+        }
+      }
+    }
+    assert.equal('image type is not accepted: image/jpeg', dataValidator.validateIssuerData(invalidImage).image.invalid)
   })
 })

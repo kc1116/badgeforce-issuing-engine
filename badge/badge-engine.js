@@ -5,6 +5,7 @@ const s3Utils = require('../s3/s3-utils')
 const models = require('../database/db').models
 const assertion = require('./open-badge/assertion')
 const badgeclass = require('./badge-class/badge-class')
+const issuer = require('./open-badge/issuer')
 /*
     validate data
     get new assertion object
@@ -27,8 +28,7 @@ let issueNewBadge = (data) => {
       callback(null, assertion.create(data))
     } ],
     validateAssertion: [ 'getNewAssertion', (results, callback) => {
-      // obvalidator.validateBadgeAssertion(results.getNewAssertion, callback)
-      callback()
+      obvalidator.validateBadgeAssertion(results.getNewAssertion, callback)
     }],
     save: [ 'validateAssertion', (results, callback) => {
       models.saveNewAssertion(results.getNewAssertion.toObject(), callback)
@@ -62,7 +62,30 @@ let createNewBadgeClass = (data) => {
   })
 }
 
+let createNewIssuer = (data) => {
+  async.auto({
+    validateData: (callback) => {
+      callback(dataValidator.validateIssuerData(data))
+    },
+    s3UploadImage: [ 'validateData', (results, callback) => {
+      (data.options.image.type === 'file') ? s3Utils.uploadIssuerImage(data.options.image.image, callback) : callback()
+    }],
+    getNewIssuer: [ 's3UploadImage', (results, callback) => {
+      if (results.s3UploadImage) {
+        data.options.image.image = results.s3UploadImage.Location
+      }
+      callback(null, issuer.create(data))
+    } ],
+    save: [ 'getNewIssuer', (results, callback) => {
+      models.saveNewIssuer(results.getNewIssuer.toObject(), callback)
+    }]
+  }, (err, results) => {
+    console.log(err)
+    console.log('Results: \n ', results)
+  })
+}
 module.exports = {
   issueNewBadge: issueNewBadge,
-  createNewBadgeClass: createNewBadgeClass
+  createNewBadgeClass: createNewBadgeClass,
+  createNewIssuer: createNewIssuer
 }

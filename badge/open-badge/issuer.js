@@ -4,8 +4,12 @@ class Issuer {
     this.url = url || null
 
     if (options.description) { this.description = options.description }
-    if (options.image) { this.image = options.image }
+    if (options.image) { this.image = options.image.image }
     if (options.email) { this.email = options.email }
+  }
+
+  toObject () {
+    return this
   }
 }
 

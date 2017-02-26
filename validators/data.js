@@ -208,11 +208,50 @@ let validateAlignmentData = (alignment) => {
   }
   return err
 }
+
+let validateIssuerData = (issuer) => {
+  var err = {}
+  if (!issuer) {
+    err['missing'] = 'issuer data missing'
+    return err
+  }
+
+  if (!issuer.name) {
+    err['name'] = 'issuer name is missing'
+  }
+
+  if (!issuer.url || !validator.isURL(issuer.url)) {
+    err['url'] = 'issuer url is invalid or missing'
+  }
+
+  if (issuer.options) {
+    if (issuer.options.email && !validator.isEmail(issuer.options.email)) {
+      err['email'] = 'email for issuer is invalid: ' + issuer.options.email
+    }
+
+    if (issuer.options.image) {
+      if (issuer.options.image.type === 'url' && !validator.isURL(issuer.options.image.image)) {
+        err['image'] = 'issuer image url is invalid: ' + issuer.options.image.image
+      } else if (issuer.options.image.type === 'file') {
+        let imageErr = validateImage(issuer.options.image)
+        if (imageErr) {
+          err['image'] = imageErr
+        }
+      }
+    }
+  }
+
+  if (_.isEmpty(err)) {
+    return null
+  }
+  return err
+}
 module.exports = {
   validateAssertionData: validateAssertionData,
   validateIdentity: validateIdentity,
   validateVerify: validateVerify,
   validateImage: validateImage,
   validateBadgeClassData: validateBadgeClassData,
-  validateAlignmentData: validateAlignmentData
+  validateAlignmentData: validateAlignmentData,
+  validateIssuerData: validateIssuerData
 }

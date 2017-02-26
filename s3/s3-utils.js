@@ -24,7 +24,26 @@ let uploadAssertionImage = (file, callback) => {
   s3.upload(uploadParams, callback)
 }
 
-let uploadABadgeClassImage = (file, callback) => {
+let uploadBadgeClassImage = (file, callback) => {
+  let uploadParams = {
+    Bucket: 'just-a-test-badgeforce', // bucket needs to be from config file
+    Key: '',
+    Body: ''
+  }
+
+  let fileStream = fs.createReadStream(file)
+  fileStream.on('error', (err) => {
+    // logging will come later: Error uploading assertion image to s3
+    console.log('File Error', err)
+    callback(err, null)
+  })
+
+  uploadParams.Body = fileStream
+  uploadParams.Key = path.basename(file)
+  s3.upload(uploadParams, callback)
+}
+
+let uploadIssuerImage = (file, callback) => {
   let uploadParams = {
     Bucket: 'just-a-test-badgeforce', // bucket needs to be from config file
     Key: '',
@@ -45,5 +64,6 @@ let uploadABadgeClassImage = (file, callback) => {
 
 module.exports = {
   uploadAssertionImage: uploadAssertionImage,
-  uploadABadgeClassImage: uploadABadgeClassImage
+  uploadBadgeClassImage: uploadBadgeClassImage,
+  uploadIssuerImage: uploadIssuerImage
 }

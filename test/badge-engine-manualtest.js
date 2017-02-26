@@ -9,7 +9,7 @@ let fullpath = path.join(__dirname, '/gopher.png')
 var data = {
   recipient: recipient,
   verify: verifyObj,
-  badge: 'https://badge.com',
+  badge: 'https://s3.amazonaws.com/just-a-test-badgeforce/test-badge-class.json',
   options: {
     image: {
       type: 'file',
@@ -20,7 +20,7 @@ var data = {
 
 badgeEngine.issueNewBadge(data)
 */
-let data = {
+/* let data = {
   'name': 'New Badge Class',
   'description': 'Beautiful badge class',
   'image': {
@@ -43,6 +43,21 @@ let data = {
   }
 }
 badgeEngine.createNewBadgeClass(data)
+*/
+
+let issuerData = {
+  name: 'BadgeForce Issuer',
+  url: 'https://badgeforce.io',
+  options: {
+    email: 'engineering@badgeforce.io',
+    image: {
+      image: path.join(__dirname, '/gopher.png'),
+      type: 'file'
+    },
+    description: 'The best issuer ever.'
+  }
+}
+badgeEngine.createNewIssuer(issuerData)
 /* describe('Openbadges validator wrapper test suite', function () {
   it('Validate verify object with good data', function () {
     let recipient = identity.create({identity: 'khalil@gmail.com', type: 'email'})
@@ -57,3 +72,4 @@ badgeEngine.createNewBadgeClass(data)
     // assert.equal(true, _.isEmpty(dataValidator.validateVerify(verifyObj)))
   })
 }) */
+

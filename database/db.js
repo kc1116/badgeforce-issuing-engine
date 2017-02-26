@@ -28,7 +28,7 @@ mongoose.connection.on('disconnected', function () {
 const assertionSchema = new Schema({
   uid: {type: String, required: true},
   recipient: {type: Schema.Types.Mixed, required: true},
-  badge: String,
+  badge: {type: String, required: true},
   verify: {type: Schema.Types.Mixed, required: true},
   issuedOn: { type: Date, default: Date.now, required: true },
   image: String,
@@ -46,8 +46,30 @@ const badgeClassSchema = new Schema({
   tags: Array
 })
 
+let issuerData = {
+  name: 'BadgeForce Issuer',
+  url: 'https://badgeforce.io',
+  options: {
+    email: 'engineering@badgeforce.io',
+    image: {
+      image: 'https://google.com/golang',
+      type: 'url'
+    },
+    description: 'The best issuer ever.'
+  }
+}
+
+const issuerSchema = new Schema({
+  name: {type: String, required: true},
+  url: {type: String, required: true},
+  email: String,
+  image: String,
+  description: String
+})
+
 const Assertion = connection.model('Assertion', assertionSchema)
 const BadgeClass = connection.model('BadgeClass', badgeClassSchema)
+const Issuer = connection.model('Issuer', issuerSchema)
 
 let saveNewAssertion = (assertion, callback) => {
   Assertion.create(assertion, callback)
@@ -57,10 +79,15 @@ let saveNewBadgeClass = (badgeClass, callback) => {
   BadgeClass.create(badgeClass, callback)
 }
 
+let saveNewIssuer = (issuer, callback) => {
+  Issuer.create(issuer, callback)
+}
+
 module.exports = {
   models: {
     saveNewAssertion: saveNewAssertion,
-    saveNewBadgeClass: saveNewBadgeClass
+    saveNewBadgeClass: saveNewBadgeClass,
+    saveNewIssuer: saveNewIssuer
   }
 }
 
