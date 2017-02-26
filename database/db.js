@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-// mongoose.createConnection('mongodb://user:pass@localhost:port/database', { config: { autoIndex: false } })
+mongoose.createConnection('mongodb://badgeforce:badgeforce@localhost:27017/BadgeForce', { config: { autoIndex: false } })
 
 let assertionSchema = new Schema({
   uid: {type: String, required: true},
@@ -40,3 +40,4 @@ module.exports = {
     getNewBadgeClass: getNewBadgeClass
   }
 }
+

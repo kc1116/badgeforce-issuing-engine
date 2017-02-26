@@ -2,6 +2,7 @@ const assert = require('assert')
 const dataValidator = require('../validators/data')
 const identity = require('../badge/open-badge/identity')
 const verify = require('../badge/open-badge/verify')
+const alignment = require('../badge/badge-class/alignment')
 const _ = require('lodash')
 const path = require('path')
 
@@ -131,3 +132,154 @@ describe('Data validator for assertion object test suite', function () {
   })
 })
 
+describe('Data validator for alignment object test suite', function () {
+  it('Validate alignment object with good data', function () {
+    let data = {
+      'name': 'New Alignment',
+      'url': 'https://newalignment.com',
+      'options': {
+        'description': 'This is a description'
+      }
+    }
+    assert.equal(true, _.isEmpty(dataValidator.validateAlignmentData(data)))
+  })
+  it('Validate alignment object with missing data', function () {
+    let data = null
+    assert.equal('alignment data is missing', dataValidator.validateAlignmentData(data).missing)
+  })
+  it('Validate alignment object with missing name', function () {
+    let data = {
+      'url': 'https://newalignment.com',
+      'options': {
+        'description': 'This is a description'
+      }
+    }
+    assert.equal('alignment name is missing', dataValidator.validateAlignmentData(data).name)
+  })
+  it('Validate alignment object with missing url', function () {
+    let data = {
+      'name': 'This is a name',
+      'options': {
+        'description': 'This is a description'
+      }
+    }
+    assert.equal('alignment url is missing', dataValidator.validateAlignmentData(data).url)
+  })
+})
+
+describe('Data validator for badge class object test suite', function () {
+  it('Validate badge class object with good data', function () {
+    let data = {
+      'name': 'New Badge Class',
+      'description': 'Beautiful badge class',
+      'image': 'https://google.com/gopher.png',
+      'criteria': 'https://google.com',
+      'issuer': 'https://google.com/issuer',
+      'alignment': [
+        {
+          'name': 'New Alignment',
+          'url': 'https://newalignment.com',
+          'options': {
+            'description': 'This is a description'
+          }
+        }
+      ],
+      'options': {
+        'description': 'This is a description'
+      }
+    }
+    assert.equal(true, _.isEmpty(dataValidator.validateBadgeClassData(data)))
+  })
+  it('Validate badge class object with missing data', function () {
+    let data = null
+    assert.equal('badge class data is missing', dataValidator.validateBadgeClassData(data).missing)
+  })
+  it('Validate badge class object with  missing name', function () {
+    let data = {
+      'description': 'Beautiful badge class',
+      'image': 'https://google.com/gopher.png',
+      'criteria': 'https://google.com',
+      'issuer': 'https://google.com/issuer',
+      'alignment': [
+        {
+          'name': 'New Alignment',
+          'url': 'https://newalignment.com',
+          'options': {
+            'description': 'This is a description'
+          }
+        }
+      ]
+    }
+    assert.equal('badge class name is missing', dataValidator.validateBadgeClassData(data).name)
+  })
+  it('Validate badge class object with missing description', function () {
+    let data = {
+      'name': 'New Badge Class',
+      'image': 'https://google.com/gopher.png',
+      'criteria': 'https://google.com',
+      'issuer': 'https://google.com/issuer',
+      'alignment': [
+        {
+          'name': 'New Alignment',
+          'url': 'https://newalignment.com',
+          'options': {
+            'description': 'This is a description'
+          }
+        }
+      ]
+    }
+    assert.equal('badge class description is missing', dataValidator.validateBadgeClassData(data).description)
+  })
+  it('Validate badge class object with missing image', function () {
+    let data = {
+      'name': 'New Badge Class',
+      'description': 'This is a description',
+      'criteria': 'https://google.com',
+      'issuer': 'https://google.com/issuer',
+      'alignment': [
+        {
+          'name': 'New Alignment',
+          'url': 'https://newalignment.com',
+          'options': {
+            'description': 'This is a description'
+          }
+        }
+      ]
+    }
+    assert.equal('badge class image is missing', dataValidator.validateBadgeClassData(data).image)
+  })
+  it('Validate badge class object with missing criteria', function () {
+    let data = {
+      'name': 'New Badge Class',
+      'image': 'https://google.com/gopher.png',
+      'issuer': 'https://google.com/issuer',
+      'alignment': [
+        {
+          'name': 'New Alignment',
+          'url': 'https://newalignment.com',
+          'options': {
+            'description': 'This is a description'
+          }
+        }
+      ]
+    }
+    assert.equal('badge class criteria is invalid or missing', dataValidator.validateBadgeClassData(data).criteria)
+  })
+  it('Validate badge class object with missing issuer', function () {
+    let data = {
+      'name': 'New Badge Class',
+      'image': 'https://google.com/gopher.png',
+      'criteria': 'https://google.com',
+      'alignment': [
+        {
+          'name': 'New Alignment',
+          'url': 'https://newalignment.com',
+          'options': {
+            'description': 'This is a description'
+          }
+        }
+      ]
+    }
+    assert.equal('badge class issuer is invalid or missing', dataValidator.validateBadgeClassData(data).issuer)
+  })
+})

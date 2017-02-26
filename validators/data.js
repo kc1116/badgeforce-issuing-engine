@@ -15,7 +15,7 @@ let validateAssertionData = (data) => {
   }
 
   let recipientErr = validateIdentity(data.recipient)
-  if (!_.isEmpty(recipientErr)) {
+  if (recipientErr) {
     err['recipient'] = recipientErr
   }
 
@@ -24,7 +24,7 @@ let validateAssertionData = (data) => {
   }
 
   let verifyErr = validateVerify(data.verify)
-  if (!_.isEmpty(verifyErr)) {
+  if (verifyErr) {
     err['verify'] = verifyErr
   }
 
@@ -35,7 +35,7 @@ let validateAssertionData = (data) => {
         err['image'] = 'optional image url is invalid: ' + options.image.image
       } else if (options.image.type === 'file') {
         let imageErr = validateImage(options.image)
-        if (!_.isEmpty(imageErr)) {
+        if (imageErr) {
           err['image'] = imageErr
         }
       } else {
@@ -47,6 +47,65 @@ let validateAssertionData = (data) => {
     }
     if (options.expires && !validator.isDate(options.expires)) {
       err['expires'] = 'optional expires date is invalid: ' + options.expires
+    }
+  }
+
+  if (_.isEmpty(err)) {
+    return null
+  }
+
+  return err
+}
+
+let validateBadgeClassData = (data) => {
+  var err = {}
+
+  if (!data) {
+    err['missing'] = 'badge class data is missing'
+    return err
+  }
+
+  if (!data.name) {
+    err['name'] = 'badge class name is missing'
+  }
+
+  if (!data.description) {
+    err['description'] = 'badge class description is missing'
+  }
+
+  if (!data.image) {
+    err['image'] = 'badge class image is missing'
+  } else {
+    if (data.image.type === 'url' && !validator.isURL(data.image.image)) {
+      err['image'] = 'badge class image url is invalid: ' + data.image.image
+    } else if (data.image.type === 'file') {
+      let imageErr = validateImage(data.image.image)
+      if (imageErr) {
+        err['image'] = imageErr
+      }
+    }
+  }
+
+  if (!data.criteria || !validator.isURL(data.criteria)) {
+    err['criteria'] = 'badge class criteria is invalid or missing'
+  }
+
+  if (!data.issuer || !validator.isURL(data.issuer)) {
+    err['issuer'] = 'badge class issuer is invalid or missing'
+  }
+
+  if (data.options) {
+    if (data.options.alignment) {
+      let alignmentErrs = []
+      _.forEach(data.options.alignment, alignmentObj => {
+        let alignmentObjErr = validateAlignmentData(alignmentObj)
+        if (alignmentObjErr) {
+          alignmentErrs.push(alignmentObjErr)
+        }
+      })
+      if (alignmentErrs.length > 0) {
+        err['alignment'] = alignmentErrs
+      }
     }
   }
 
@@ -128,9 +187,32 @@ let validateImage = (image) => {
     })
   } */
 }
+
+let validateAlignmentData = (alignment) => {
+  var err = {}
+  if (!alignment) {
+    err['missing'] = 'alignment data is missing'
+    return err
+  }
+
+  if (!alignment.name) {
+    err['name'] = 'alignment name is missing'
+  }
+
+  if (!alignment.url || !validator.isURL(alignment.url)) {
+    err['url'] = 'alignment url is missing'
+  }
+
+  if (_.isEmpty(err)) {
+    return null
+  }
+  return err
+}
 module.exports = {
   validateAssertionData: validateAssertionData,
   validateIdentity: validateIdentity,
   validateVerify: validateVerify,
-  validateImage: validateImage
+  validateImage: validateImage,
+  validateBadgeClassData: validateBadgeClassData,
+  validateAlignmentData: validateAlignmentData
 }
