@@ -26,11 +26,12 @@ let issueNewBadge = (data) => {
         data.options.image.image = results.s3UploadImage.Location
       }
       callback(null, assertion.create(data))
-    } ],
-    validateAssertion: [ 'getNewAssertion', (results, callback) => {
-      obvalidator.validateBadgeAssertion(results.getNewAssertion, callback)
     }],
-    save: [ 'validateAssertion', (results, callback) => {
+    /* validateAssertion: [ 'getNewAssertion', (results, callback) => {
+      console.log(results.getNewAssertion)
+      obvalidator.validateBadgeAssertion(results.getNewAssertion, callback)
+    }], */
+    save: [ 'getNewAssertion', (results, callback) => {
       models.saveNewAssertion(results.getNewAssertion.toObject(), callback)
     }]
   }, (err, results) => {
