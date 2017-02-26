@@ -46,19 +46,6 @@ const badgeClassSchema = new Schema({
   tags: Array
 })
 
-let issuerData = {
-  name: 'BadgeForce Issuer',
-  url: 'https://badgeforce.io',
-  options: {
-    email: 'engineering@badgeforce.io',
-    image: {
-      image: 'https://google.com/golang',
-      type: 'url'
-    },
-    description: 'The best issuer ever.'
-  }
-}
-
 const issuerSchema = new Schema({
   name: {type: String, required: true},
   url: {type: String, required: true},
@@ -67,9 +54,9 @@ const issuerSchema = new Schema({
   description: String
 })
 
-const Assertion = connection.model('Assertion', assertionSchema)
-const BadgeClass = connection.model('BadgeClass', badgeClassSchema)
-const Issuer = connection.model('Issuer', issuerSchema)
+const Assertion = connection.model('Assertion', assertionSchema, 'BadgeForceAssertions')
+const BadgeClass = connection.model('BadgeClass', badgeClassSchema, 'BadgeForceBadgeClass')
+const Issuer = connection.model('Issuer', issuerSchema, 'BadgeForceIssuers')
 
 let saveNewAssertion = (assertion, callback) => {
   Assertion.create(assertion, callback)
