@@ -1,3 +1,5 @@
+const alignment = require('./alignment')
+
 class BadgeClass {
   constructor (name, description, image, criteria, issuer, options) {
     // required data for an BadgeClass
@@ -18,6 +20,11 @@ class BadgeClass {
 }
 
 let create = (data) => {
+  if (data.options.alignment) {
+    data.options.alignment = data.options.alignment.map(alignmentData => {
+      return alignment.create(alignmentData)
+    })
+  }
   return new BadgeClass(data.name, data.description, data.image.image, data.criteria, data.issuer, data.options)
 }
 

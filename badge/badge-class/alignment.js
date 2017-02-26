@@ -8,7 +8,7 @@ class Alignment {
 }
 
 let create = (data) => {
-  return new Alignment(data.name, data.url, data.description)
+  return new Alignment(data.name, data.url, data.options.description)
 }
 
 module.exports = {

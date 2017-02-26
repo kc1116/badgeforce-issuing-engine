@@ -49,18 +49,18 @@ const badgeClassSchema = new Schema({
 const Assertion = connection.model('Assertion', assertionSchema)
 const BadgeClass = connection.model('BadgeClass', badgeClassSchema)
 
-let getNewAssertion = (assertion, callback) => {
+let saveNewAssertion = (assertion, callback) => {
   Assertion.create(assertion, callback)
 }
 
-let getNewBadgeClass = (badgeClass, callback) => {
+let saveNewBadgeClass = (badgeClass, callback) => {
   BadgeClass.create(badgeClass, callback)
 }
 
 module.exports = {
   models: {
-    getNewAssertion: getNewAssertion,
-    getNewBadgeClass: getNewBadgeClass
+    saveNewAssertion: saveNewAssertion,
+    saveNewBadgeClass: saveNewBadgeClass
   }
 }
 

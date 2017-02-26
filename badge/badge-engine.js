@@ -31,7 +31,7 @@ let issueNewBadge = (data) => {
       callback()
     }],
     save: [ 'validateAssertion', (results, callback) => {
-      models.getNewAssertion(results.getNewAssertion.toObject(), callback)
+      models.saveNewAssertion(results.getNewAssertion.toObject(), callback)
     }]
   }, (err, results) => {
     console.log('Error: \n', err)
@@ -54,7 +54,7 @@ let createNewBadgeClass = (data) => {
       callback(null, badgeclass.create(data))
     } ],
     save: [ 'getNewBadgeClass', (results, callback) => {
-      models.getNewBadgeClass(results.getNewBadgeClass.toObject(), callback)
+      models.saveNewBadgeClass(results.getNewBadgeClass.toObject(), callback)
     }]
   }, (err, results) => {
     console.log(err)

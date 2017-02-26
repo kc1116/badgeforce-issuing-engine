@@ -3,7 +3,7 @@ const identity = require('../badge/open-badge/identity')
 const verify = require('../badge/open-badge/verify')
 const path = require('path')
 
-let recipient = identity.create({identity: 'khalil@gmail.com', type: 'email'})
+/* let recipient = identity.create({identity: 'khalil@gmail.com', type: 'email'})
 let verifyObj = verify.create({type: 'hosted', url: 'https://khalil.com'})
 let fullpath = path.join(__dirname, '/gopher.png')
 var data = {
@@ -19,7 +19,30 @@ var data = {
 }
 
 badgeEngine.issueNewBadge(data)
-
+*/
+let data = {
+  'name': 'New Badge Class',
+  'description': 'Beautiful badge class',
+  'image': {
+    'image': 'https://google.com/gopher.png',
+    'type': 'url'
+  },
+  'criteria': 'https://google.com',
+  'issuer': 'https://google.com/issuer',
+  'options': {
+    'alignment': [
+      {
+        'name': 'New Alignment',
+        'url': 'https://newalignment.com',
+        'options': {
+          'description': 'This is a description'
+        }
+      }
+    ],
+    'tags': ['this', 'is', 'a', 'test']
+  }
+}
+badgeEngine.createNewBadgeClass(data)
 /* describe('Openbadges validator wrapper test suite', function () {
   it('Validate verify object with good data', function () {
     let recipient = identity.create({identity: 'khalil@gmail.com', type: 'email'})
