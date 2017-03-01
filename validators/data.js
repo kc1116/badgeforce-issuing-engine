@@ -31,15 +31,20 @@ let validateAssertionData = (data) => {
   if (data.options) {
     let options = data.options
     if (options.image) {
-      if (options.image.type === 'url' && !validator.isURL(options.image)) {
-        err['image'] = 'optional image url is invalid: ' + options.image.image
-      } else if (options.image.type === 'file') {
-        let imageErr = validateImage(options.image)
-        if (imageErr) {
-          err['image'] = imageErr
-        }
-      } else {
-        err['image'] = 'optional image is invalid: ' + options.image.image
+      switch (options.image.type) {
+        case 'url':
+          if (!validator.isURL(options.image.image)) {
+            err['image'] = 'optional image url is invalid: ' + options.image.image
+          }
+          break
+        case 'file':
+          let imageErr = validateImage(options.image)
+          if (imageErr) {
+            err['image'] = imageErr
+          }
+          break
+        default:
+          err['image'] = 'optional image is invalid: ' + options.image.image
       }
     }
     if (options.evidence && !validator.isURL(options.evidence)) {
@@ -76,13 +81,20 @@ let validateBadgeClassData = (data) => {
   if (!data.image) {
     err['image'] = 'badge class image is missing'
   } else {
-    if (data.image.type === 'url' && !validator.isURL(data.image.image)) {
-      err['image'] = 'badge class image url is invalid: ' + data.image.image
-    } else if (data.image.type === 'file') {
-      let imageErr = validateImage(data.image.image)
-      if (imageErr) {
-        err['image'] = imageErr
-      }
+    switch (data.image.type) {
+      case 'url':
+        if (!validator.isURL(data.image.image)) {
+          err['image'] = 'badge class image url is invalid: ' + data.image.image
+        }
+        break
+      case 'file':
+        let imageErr = validateImage(data.image.image)
+        if (imageErr) {
+          err['image'] = imageErr
+        }
+        break
+      default:
+        err['image'] = 'badge class image url is invalid: ' + data.image.image
     }
   }
 

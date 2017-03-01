@@ -8,7 +8,10 @@ class Assertion {
     this.badge = badge || null
     this.verify = verify || null
     this.issuedOn = new Date().toISOString()
-
+    this.system = {
+      uid: uid,
+      created_on: new Date().toISOString()
+    }
     // optional assertion data
     if (options) {
       if (options.image) { this.image = options.image.image };

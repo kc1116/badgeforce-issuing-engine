@@ -1,6 +1,5 @@
 const async = require('async')
 const dataValidator = require('../validators/data')
-const obvalidator = require('../validators/schema')
 const s3Utils = require('../s3/s3-utils')
 const models = require('../database/db').models
 const assertion = require('./open-badge/assertion')
@@ -13,13 +12,13 @@ const issuer = require('./open-badge/issuer')
     send image to s3 if present
     save to database
 */
-let issueNewBadge = (data) => {
+let issueNewBadge = (data, callback) => {
   async.auto({
     validateData: (callback) => {
       callback(dataValidator.validateAssertionData(data))
     },
     s3UploadImage: [ 'validateData', (results, callback) => {
-      (data.options.image) ? s3Utils.uploadAssertionImage(data.options.image.image, callback) : callback()
+      (data.options.image && data.options.image.type === 'file') ? s3Utils.uploadAssertionImage(data.options.image.image, callback) : callback()
     }],
     getNewAssertion: [ 's3UploadImage', (results, callback) => {
       if (results.s3UploadImage) {
@@ -27,20 +26,21 @@ let issueNewBadge = (data) => {
       }
       callback(null, assertion.create(data))
     }],
-    /* validateAssertion: [ 'getNewAssertion', (results, callback) => {
+    validateAssertion: [ 'getNewAssertion', (results, callback) => {
       console.log(results.getNewAssertion)
-      obvalidator.validateBadgeAssertion(results.getNewAssertion, callback)
-    }], */
+      // obvalidator.validateBadgeAssertion(results.getNewAssertion, callback)
+      callback()
+    }],
     save: [ 'getNewAssertion', (results, callback) => {
-      models.saveNewAssertion(results.getNewAssertion.toObject(), callback)
+      // models.saveNewAssertion(results.getNewAssertion.toObject(), callback)
+      callback()
     }]
   }, (err, results) => {
-    console.log('Error: \n', err)
-    console.log('Results: \n ', results.save)
+    callback(err, results.getNewAssertion)
   })
 }
 
-let createNewBadgeClass = (data) => {
+let createNewBadgeClass = (data, callback) => {
   async.auto({
     validateData: (callback) => {
       callback(dataValidator.validateBadgeClassData(data))
@@ -58,12 +58,11 @@ let createNewBadgeClass = (data) => {
       models.saveNewBadgeClass(results.getNewBadgeClass.toObject(), callback)
     }]
   }, (err, results) => {
-    console.log(err)
-    console.log('Results: \n ', results.save)
+    callback(err, results.getNewBadgeClass)
   })
 }
 
-let createNewIssuer = (data) => {
+let createNewIssuer = (data, callback) => {
   async.auto({
     validateData: (callback) => {
       callback(dataValidator.validateIssuerData(data))
@@ -81,8 +80,7 @@ let createNewIssuer = (data) => {
       models.saveNewIssuer(results.getNewIssuer.toObject(), callback)
     }]
   }, (err, results) => {
-    console.log(err)
-    console.log('Results: \n ', results)
+    callback(err, results.getNewIssuer)
   })
 }
 module.exports = {

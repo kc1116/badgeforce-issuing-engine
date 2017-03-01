@@ -173,20 +173,22 @@ describe('Data validator for badge class object test suite', function () {
     let data = {
       'name': 'New Badge Class',
       'description': 'Beautiful badge class',
-      'image': 'https://google.com/gopher.png',
+      'image': {
+        'type': 'url',
+        'image': 'https://google.com/gopher.png'
+      },
       'criteria': 'https://google.com',
       'issuer': 'https://google.com/issuer',
-      'alignment': [
-        {
-          'name': 'New Alignment',
-          'url': 'https://newalignment.com',
-          'options': {
-            'description': 'This is a description'
-          }
-        }
-      ],
       'options': {
-        'description': 'This is a description'
+        'alignment': [
+          {
+            'name': 'New Alignment',
+            'url': 'https://newalignment.com',
+            'options': {
+              'description': 'This is a description'
+            }
+          }
+        ]
       }
     }
     assert.equal(true, _.isEmpty(dataValidator.validateBadgeClassData(data)))
