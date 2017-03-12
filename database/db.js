@@ -36,7 +36,9 @@ const assertionSchema = new Schema({
   image: String,
   evidence: String,
   expires: Date,
+  signature: {type: String},
   system: {
+    issuer: {type: String, required: true, index: true},
     uid: {type: String, required: true, index: true},
     created_on: {type: Date, required: true}
   }
@@ -53,6 +55,7 @@ const badgeClassSchema = new Schema({
   system: {
     uid: {type: String, required: true, index: true},
     name: {type: String, required: true, index: true, unique: true},
+    issuer: {type: String, required: true, index: true},
     created_on: {type: Date, required: true}
   }
 })
@@ -70,9 +73,21 @@ const issuerSchema = new Schema({
   }
 })
 
+const privateKeySchema = new Schema({
+  privatekeypem: {type: String, required: true},
+  meta: {type: Schema.Types.Mixed, required: true}
+})
+
+const publicKeySchema = new Schema({
+  publickeypem: {type: String, required: true},
+  meta: {type: Schema.Types.Mixed, required: true}
+})
+
 const Assertion = connection.model('Assertion', assertionSchema, 'BadgeForceAssertions')
 const BadgeClass = connection.model('BadgeClass', badgeClassSchema, 'BadgeForceBadgeClass')
 const Issuer = connection.model('Issuer', issuerSchema, 'BadgeForceIssuers')
+const PrivateKeyPem = connection.model('PrivateKeyPem', privateKeySchema, 'BadgeForceKeyPairs')
+const PublicKeyPem = connection.model('PublicKeyPem', publicKeySchema, 'BadgeForceKeyPairs')
 
 let saveNewAssertion = (assertion, callback) => {
   Assertion.create(assertion, callback)
@@ -106,6 +121,14 @@ let hash = (data) => {
   return crypto.createHash('md5').update(data).digest('hex')
 }
 
+let getIssuerPrivateKey = (issuerUUID, callback) => {
+  PrivateKeyPem.findOne({'meta.issuer': issuerUUID}, 'privatekeypem', callback)
+}
+
+let getIssuerPublicKey = (issuerUUID, callback) => {
+  PublicKeyPem.findOne({'meta.issuer': issuerUUID}, 'publickeypem', callback)
+}
+
 module.exports = {
   models: {
     saveNewAssertion: saveNewAssertion,
@@ -113,7 +136,9 @@ module.exports = {
     saveNewIssuer: saveNewIssuer
   },
   utils: {
-    hash: hash
+    hash: hash,
+    getIssuerPrivateKey: getIssuerPrivateKey,
+    getIssuerPublicKey: getIssuerPublicKey
   }
 }
 

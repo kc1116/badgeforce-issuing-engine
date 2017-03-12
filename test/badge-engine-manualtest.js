@@ -1,9 +1,9 @@
-// const badgeEngine = require('../badge/badge-engine')
+const badgeEngine = require('../badge/badge-engine')
 const identity = require('../badge/open-badge/identity')
 const verify = require('../badge/open-badge/verify')
 const path = require('path')
 
-/* let recipient = identity.create({identity: 'khalil@gmail.com', type: 'email'})
+let recipient = identity.create({identity: 'khalil@gmail.com', type: 'email'})
 let verifyObj = verify.create({type: 'hosted', url: 'https://khalil.com'})
 let fullpath = path.join(__dirname, '/gopher.png')
 var data = {
@@ -14,12 +14,17 @@ var data = {
     image: {
       type: 'file',
       image: fullpath
-    }
-  }
+    },
+    signAssertion: true
+  },
+  issuer: '9e63485b-fb35-41a6-86ce-5331b3aba7a1'
 }
 
-badgeEngine.issueNewBadge(data)
-*/
+badgeEngine.issueNewBadge(data, (err, results) => {
+  /* console.log(err)
+  console.log(results) */
+})
+
 /* let data = {
   'name': 'New Badge Class',
   'description': 'Beautiful badge class',

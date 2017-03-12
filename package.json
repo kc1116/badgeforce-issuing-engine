@@ -37,6 +37,7 @@
     "body-parser": "^1.16.1",
     "express": "^4.14.1",
     "image-type": "^3.0.0",
+    "jsonwebtoken": "^7.3.0",
     "lodash": "^4.17.4",
     "mongoose": "^4.8.4",
     "openbadges-validator": "^1.1.1",
